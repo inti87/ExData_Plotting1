@@ -7,7 +7,7 @@ graphics.off()
 # Load R packages
 packages <- c("tidyverse", "data.table", "janitor", "lubridate") # list of packages to load
 source("package_check.R") # load or install & load list of packages
-
+rm(packages, package.check)
 
 # Create data folder if necessary
 if(!dir.exists("data")){ 
@@ -36,8 +36,12 @@ df <- df %>%
          datetime = dmy_hms(datetime)) %>%  # convert to date time object
   select(-time) %>% # drop time column
   select(date, datetime, everything()) %>%  # re-arrange columns
-  mutate_if(.predicate = is.character, .funs = as.numeric) # convert remaining strings to numeric
-
+  mutate_if(.predicate = is.character, .funs = as.numeric) %>%  # convert remaining strings to numeric
+  # rename selected columns
+  rename(Sub_metering_1 = sub_metering_1,
+         Sub_metering_2 = sub_metering_2,
+         Sub_metering_3 = sub_metering_3)
+  
 # Sort only relevant rows
 df <- df %>% 
   filter(date >= "2007-02-01" & date <= "2007-02-02")
